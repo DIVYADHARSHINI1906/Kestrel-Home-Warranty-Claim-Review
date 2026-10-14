@@ -1,0 +1,230 @@
+{
+  "parameters": {
+    "monthly_desk_capacity": 40,
+    "goodwill_penalty_per_genuine_delayed_inr": 380.0,
+    "blended_contact_cost_inr": 260.0,
+    "operating_threshold": 0.4615,
+    "realization_rate": 1.0
+  },
+  "historical_performance_15_months": {
+    "total_claims_in_period": 11814,
+    "total_reviewed_by_desk": 600,
+    "total_frauds_intercepted": 145,
+    "total_genuine_held": 455,
+    "fraud_prevention_rate_rupees": 645126.0,
+    "goodwill_costs_incurred_rupees": 172900.0,
+    "investigation_labor_cost_rupees": 156000.0,
+    "net_financial_benefit_rupees": 316226.0,
+    "net_benefit_per_investigated_claim_rupees": 527.04,
+    "monthly_breakdown": [
+      {
+        "month": "2025-04",
+        "claims_submitted": 778,
+        "claims_reviewed": 40,
+        "frauds_detected": 7,
+        "genuines_held": 33,
+        "prevented_fraud_loss_inr": 28597.0,
+        "goodwill_cost_inr": 12540.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 5657.0
+      },
+      {
+        "month": "2025-05",
+        "claims_submitted": 807,
+        "claims_reviewed": 40,
+        "frauds_detected": 5,
+        "genuines_held": 35,
+        "prevented_fraud_loss_inr": 33415.0,
+        "goodwill_cost_inr": 13300.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 9715.0
+      },
+      {
+        "month": "2025-06",
+        "claims_submitted": 834,
+        "claims_reviewed": 40,
+        "frauds_detected": 11,
+        "genuines_held": 29,
+        "prevented_fraud_loss_inr": 65067.0,
+        "goodwill_cost_inr": 11020.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 43647.0
+      },
+      {
+        "month": "2025-07",
+        "claims_submitted": 831,
+        "claims_reviewed": 40,
+        "frauds_detected": 11,
+        "genuines_held": 29,
+        "prevented_fraud_loss_inr": 32346.0,
+        "goodwill_cost_inr": 11020.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 10926.0
+      },
+      {
+        "month": "2025-08",
+        "claims_submitted": 795,
+        "claims_reviewed": 40,
+        "frauds_detected": 6,
+        "genuines_held": 34,
+        "prevented_fraud_loss_inr": 26744.0,
+        "goodwill_cost_inr": 12920.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 3424.0
+      },
+      {
+        "month": "2025-09",
+        "claims_submitted": 823,
+        "claims_reviewed": 40,
+        "frauds_detected": 7,
+        "genuines_held": 33,
+        "prevented_fraud_loss_inr": 54560.0,
+        "goodwill_cost_inr": 12540.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 31620.0
+      },
+      {
+        "month": "2025-10",
+        "claims_submitted": 784,
+        "claims_reviewed": 40,
+        "frauds_detected": 9,
+        "genuines_held": 31,
+        "prevented_fraud_loss_inr": 38323.0,
+        "goodwill_cost_inr": 11780.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 16143.0
+      },
+      {
+        "month": "2025-11",
+        "claims_submitted": 768,
+        "claims_reviewed": 40,
+        "frauds_detected": 11,
+        "genuines_held": 29,
+        "prevented_fraud_loss_inr": 39638.0,
+        "goodwill_cost_inr": 11020.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 18218.0
+      },
+      {
+        "month": "2025-12",
+        "claims_submitted": 836,
+        "claims_reviewed": 40,
+        "frauds_detected": 10,
+        "genuines_held": 30,
+        "prevented_fraud_loss_inr": 66596.0,
+        "goodwill_cost_inr": 11400.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 44796.0
+      },
+      {
+        "month": "2026-01",
+        "claims_submitted": 769,
+        "claims_reviewed": 40,
+        "frauds_detected": 8,
+        "genuines_held": 32,
+        "prevented_fraud_loss_inr": 47614.0,
+        "goodwill_cost_inr": 12160.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 25054.0
+      },
+      {
+        "month": "2026-02",
+        "claims_submitted": 734,
+        "claims_reviewed": 40,
+        "frauds_detected": 5,
+        "genuines_held": 35,
+        "prevented_fraud_loss_inr": 49693.0,
+        "goodwill_cost_inr": 13300.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 25993.0
+      },
+      {
+        "month": "2026-03",
+        "claims_submitted": 785,
+        "claims_reviewed": 40,
+        "frauds_detected": 9,
+        "genuines_held": 31,
+        "prevented_fraud_loss_inr": 56429.0,
+        "goodwill_cost_inr": 11780.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 34249.0
+      },
+      {
+        "month": "2026-04",
+        "claims_submitted": 750,
+        "claims_reviewed": 40,
+        "frauds_detected": 9,
+        "genuines_held": 31,
+        "prevented_fraud_loss_inr": 36986.0,
+        "goodwill_cost_inr": 11780.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 14806.0
+      },
+      {
+        "month": "2026-05",
+        "claims_submitted": 753,
+        "claims_reviewed": 40,
+        "frauds_detected": 15,
+        "genuines_held": 25,
+        "prevented_fraud_loss_inr": 23445.0,
+        "goodwill_cost_inr": 9500.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 3545.0
+      },
+      {
+        "month": "2026-06",
+        "claims_submitted": 767,
+        "claims_reviewed": 40,
+        "frauds_detected": 22,
+        "genuines_held": 18,
+        "prevented_fraud_loss_inr": 45673.0,
+        "goodwill_cost_inr": 6840.0,
+        "desk_labor_cost_inr": 10400.0,
+        "net_monthly_benefit_inr": 28433.0
+      }
+    ]
+  },
+  "projected_q3_2026_test_quarter": {
+    "total_unlabeled_claims": 2252,
+    "total_investigations_allocated": 120,
+    "projected_gross_prevented_fraud_rupees": 65650.05,
+    "projected_goodwill_cost_rupees": 35340.0,
+    "projected_investigation_labor_rupees": 31200.0,
+    "projected_net_quarterly_benefit_rupees": -889.95,
+    "monthly_projections": [
+      {
+        "month": "2026-07",
+        "claims_submitted": 786,
+        "allocated_investigation_slots": 40,
+        "average_claimed_amount_inr": 2556.57,
+        "estimated_frauds_intercepted": 9,
+        "estimated_prevented_loss_inr": 23009.17,
+        "estimated_goodwill_penalty_inr": 11780.0,
+        "estimated_desk_labor_inr": 10400.0,
+        "projected_net_benefit_inr": 829.17
+      },
+      {
+        "month": "2026-08",
+        "claims_submitted": 730,
+        "allocated_investigation_slots": 40,
+        "average_claimed_amount_inr": 2342.8,
+        "estimated_frauds_intercepted": 9,
+        "estimated_prevented_loss_inr": 21085.2,
+        "estimated_goodwill_penalty_inr": 11780.0,
+        "estimated_desk_labor_inr": 10400.0,
+        "projected_net_benefit_inr": -1094.8
+      },
+      {
+        "month": "2026-09",
+        "claims_submitted": 736,
+        "allocated_investigation_slots": 40,
+        "average_claimed_amount_inr": 2395.07,
+        "estimated_frauds_intercepted": 9,
+        "estimated_prevented_loss_inr": 21555.67,
+        "estimated_goodwill_penalty_inr": 11780.0,
+        "estimated_desk_labor_inr": 10400.0,
+        "projected_net_benefit_inr": -624.33
+      }
+    ]
+  }
+}

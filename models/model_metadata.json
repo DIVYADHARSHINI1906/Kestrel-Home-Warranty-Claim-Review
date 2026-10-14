@@ -1,0 +1,64 @@
+{
+  "model_name": "RandomForest_Balanced_Ensemble",
+  "baseline_name": "StandardScaled_LogisticRegression",
+  "training_samples": 11814,
+  "total_claims_recorded": 12029,
+  "undecided_crm_claims": 215,
+  "fraud_count": 145,
+  "non_fraud_count": 11669,
+  "historical_fraud_rate": 0.012273573726087693,
+  "operating_threshold": 0.4615,
+  "metrics": {
+    "roc_auc": 0.8763,
+    "pr_auc": 0.6137,
+    "accuracy": 0.9546,
+    "precision": 0.1758,
+    "recall": 0.731,
+    "f1_score": 0.2834,
+    "true_positives": 106,
+    "false_positives": 497,
+    "true_negatives": 11172,
+    "false_negatives": 39,
+    "confusion_matrix": [
+      [
+        11172,
+        497
+      ],
+      [
+        39,
+        106
+      ]
+    ]
+  },
+  "baseline_comparison": {
+    "roc_auc": 0.8528,
+    "pr_auc": 0.1937
+  },
+  "feature_importances": {
+    "partner_smoothed_risk": 0.5258,
+    "amount_to_list_ratio": 0.1222,
+    "city_smoothed_risk": 0.0789,
+    "partner_tenure_days": 0.0578,
+    "claim_amount_inr": 0.0456,
+    "customer_prior_claims": 0.0321,
+    "partner_inspected_flag": 0.0179,
+    "days_since_purchase": 0.0175,
+    "warranty_consumed_ratio": 0.0159,
+    "is_new_partner": 0.0147,
+    "uninspected_under_2k": 0.0135,
+    "submission_hour": 0.0126,
+    "is_franchise": 0.0107,
+    "has_inspector_note": 0.01,
+    "is_under_2k": 0.0085,
+    "is_freelance": 0.0057,
+    "serial_has_whitespace": 0.0041,
+    "is_night_submission": 0.0022,
+    "near_warranty_expiry": 0.0015,
+    "photo_attached_flag": 0.0014,
+    "serial_len": 0.0009,
+    "early_failure": 0.0004
+  },
+  "investigation_capacity_per_month": 40,
+  "goodwill_cost_per_genuine_claim_inr": 380,
+  "average_service_contact_cost_inr": 260
+}

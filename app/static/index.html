@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kestrel Home — Warranty Claim Review & Fraud Detection</title>
+  <meta name="description" content="Internal operational tool for warranty claim triage, policy compliance validation, and machine-learning fraud detection.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <!-- Chart.js for data visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-mark">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          <div class="brand-text">
+            <span class="brand-name">Kestrel Home</span>
+            <span class="brand-dept">D2C Operations</span>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="overview" id="nav-overview">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="9"/>
+            <rect x="14" y="3" width="7" height="5"/>
+            <rect x="14" y="12" width="7" height="9"/>
+            <rect x="3" y="16" width="7" height="5"/>
+          </svg>
+          <span>Overview</span>
+        </button>
+
+        <button class="nav-item" data-view="claims" id="nav-claims">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>Claims Register</span>
+          <span class="nav-badge" id="sidebar-queue-badge">2,252</span>
+        </button>
+
+        <button class="nav-item" data-view="review" id="nav-review">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+          <span>Claim Review & Triage</span>
+        </button>
+
+        <button class="nav-item" data-view="partners" id="nav-partners">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span>Partner Analysis</span>
+        </button>
+
+        <button class="nav-item" data-view="evaluation" id="nav-evaluation">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          <span>Model Evaluation</span>
+        </button>
+
+        <button class="nav-item" data-view="settings" id="nav-settings">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span>Operations & Capacity</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="policy-notice">
+          <span class="notice-title">Ops Policy v4.1 Active</span>
+          <span class="notice-desc">Investigation Desk: 40 claims/mo max</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-wrapper">
+      <!-- App Header -->
+      <header class="app-header">
+        <div class="header-left">
+          <div class="header-left-col">
+            <div class="header-breadcrumb">
+              <span class="bc-root">Kestrel Home</span>
+              <span>/</span>
+              <span>D2C Operations</span>
+              <span>/</span>
+              <span class="bc-current" id="breadcrumb-current">Operations Overview</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <h1 class="page-title" id="page-heading">Operations Overview</h1>
+              <span class="system-environment-tag">Internal Production</span>
+            </div>
+          </div>
+        </div>
+        <div class="header-right">
+          <button class="header-search-btn" id="header-quick-search" title="Focus Global Search (Ctrl + K)">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <span>Search Claims</span>
+            <kbd class="shortcut-kbd">Ctrl K</kbd>
+          </button>
+
+          <div class="desk-capacity-pill">
+            <span class="capacity-dot"></span>
+            <span>Investigation Cap: <strong>40/mo</strong></span>
+          </div>
+
+          <div class="service-status-pill" id="service-status-badge">
+            <span class="status-indicator"></span>
+            <span id="service-status-text">System Online</span>
+          </div>
+
+          <div class="officer-profile-pill">
+            <div class="officer-avatar">KN</div>
+            <div class="officer-info">
+              <span class="officer-name">Kabir Nanda</span>
+              <span class="officer-role">Risk Operations Lead</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <div class="content-body">
+        
+        <!-- =================== 1. OVERVIEW VIEW =================== -->
+        <section class="view-panel active" id="view-overview">
+          <div class="section-intro">
+            <h2>Operations Risk Dashboard</h2>
+            <p class="section-subtext">Verified historical claim telemetry, current unadjudicated queue metrics, and fraud triage indicators.</p>
+          </div>
+
+          <!-- Section: Historical vs Operational KPIs -->
+          <div class="kpi-group-container">
+            <div class="kpi-group-header">
+              <span class="kpi-section-label">Observed Historical Baseline (15 Months: Apr 2025 – Jun 2026)</span>
+            </div>
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <span class="kpi-label">Total Historical Claims</span>
+                <span class="kpi-value" id="kpi-hist-total">12,029</span>
+                <span class="kpi-meta">11,814 Adjudicated / 215 Open CRM</span>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-label">Historical Fraud Rate</span>
+                <span class="kpi-value warning-text" id="kpi-hist-rate">1.23%</span>
+                <span class="kpi-meta">145 Confirmed Fraudulent Payouts</span>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-label">Historical Fraud Exposure</span>
+                <span class="kpi-value" id="kpi-hist-loss">₹6,45,126</span>
+                <span class="kpi-meta">Avg Fraud Claim: ₹4,449.14</span>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-label">Desk Capture Rate (Recall)</span>
+                <span class="kpi-value success-text" id="kpi-desk-recall">72.4%</span>
+                <span class="kpi-meta">105 of 145 Frauds at 40/mo Cap</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-group-container" style="margin-top: 1.5rem;">
+            <div class="kpi-group-header">
+              <span class="kpi-section-label">Active Operational Review Queue (Q3 2026 Test Claims)</span>
+            </div>
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <span class="kpi-label">Incoming Unlabeled Queue</span>
+                <span class="kpi-value" id="kpi-test-total">2,252</span>
+                <span class="kpi-meta">Q3 Period: 1 Jul – 30 Sep 2026</span>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-label">High-Risk Flagged Claims</span>
+                <span class="kpi-value danger-text" id="kpi-test-flagged">115</span>
+                <span class="kpi-meta">Score &ge; 0.4615 Operating Threshold</span>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-label">Estimated Financial Exposure</span>
+                <span class="kpi-value" id="kpi-test-exposure">₹2,84,310</span>
+                <span class="kpi-meta">Sum of Flagged Claims</span>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-label">3-Month Investigation Budget</span>
+                <span class="kpi-value" id="kpi-test-budget">120 Claims</span>
+                <span class="kpi-meta">Strictly 40 Reviews per Month</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Grid -->
+          <div class="charts-grid" style="margin-top: 2rem;">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>Claim Volume & Inspection Trend</h3>
+                <span class="chart-note">Highlighting May 1, 2026 policy change (&lt;₹2k uninspected)</span>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="chart-volume"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>Volume by Product Family</h3>
+                <span class="chart-note">Total claims vs High-risk flags</span>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="chart-products"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>Distribution of Predicted Fraud Risk</h3>
+                <span class="chart-note">Binned probability scores across entire portfolio</span>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="chart-risk-dist"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3>Claim Amount by Risk Category</h3>
+                <span class="chart-note">Total claimed rupees across risk tiers</span>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="chart-risk-amount"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Claims Queue Table -->
+          <div class="table-card" style="margin-top: 2rem;">
+            <div class="table-header-row">
+              <div>
+                <h3>Priority Investigation Queue (Recommended Top Claims)</h3>
+                <p class="table-subtext">Highest-scoring unadjudicated claims allocated to this month's 40-claim desk review budget.</p>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="navigateTo('claims')">View All Claims</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Claim ID</th>
+                    <th>Date (IST)</th>
+                    <th>Product</th>
+                    <th>Claim Amount</th>
+                    <th>Partner</th>
+                    <th>Inspection</th>
+                    <th>Photo</th>
+                    <th>Risk Score</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="overview-queue-tbody">
+                  <tr><td colspan="9" class="loading-cell">Loading priority queue...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== 2. CLAIMS VIEW =================== -->
+        <section class="view-panel" id="view-claims">
+          <div class="section-intro">
+            <h2>Claims Register & Audit Log</h2>
+            <p class="section-subtext">Search, filter, and inspect claims across historical adjudicated records and active unadjudicated queues.</p>
+          </div>
+
+          <!-- Filter Toolbar -->
+          <div class="filter-toolbar">
+            <div class="search-box">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="claims-search-input" placeholder="Search by Claim ID, Partner, Serial, SKU, or Description...">
+            </div>
+
+            <div class="filter-controls">
+              <div class="control-item">
+                <label for="filter-risk">Risk Tier:</label>
+                <select id="filter-risk">
+                  <option value="all">All Tiers</option>
+                  <option value="Critical">Critical (&ge; 75%)</option>
+                  <option value="High">High (&ge; 46%)</option>
+                  <option value="Moderate">Moderate (20-46%)</option>
+                  <option value="Low">Low (&lt; 20%)</option>
+                  <option value="Policy Non-Compliant">Policy Non-Compliant</option>
+                </select>
+              </div>
+
+              <div class="control-item">
+                <label for="filter-family">Product Family:</label>
+                <select id="filter-family">
+                  <option value="all">All Families</option>
+                  <option value="Air Fryer">Air Fryer</option>
+                  <option value="Ceiling Fan">Ceiling Fan</option>
+                  <option value="Induction Cooktop">Induction Cooktop</option>
+                  <option value="Mixer Grinder">Mixer Grinder</option>
+                  <option value="Robot Vacuum">Robot Vacuum</option>
+                  <option value="Room Heater">Room Heater</option>
+                  <option value="Water Purifier">Water Purifier</option>
+                </select>
+              </div>
+
+              <div class="control-item">
+                <label for="filter-inspected">Inspected:</label>
+                <select id="filter-inspected">
+                  <option value="all">All</option>
+                  <option value="Y">Yes (Y)</option>
+                  <option value="N">No (N)</option>
+                </select>
+              </div>
+
+              <div class="control-item">
+                <label for="filter-dataset">Dataset:</label>
+                <select id="filter-dataset">
+                  <option value="test">Active Queue (Unlabeled Test)</option>
+                  <option value="historical">Historical Records (Train)</option>
+                  <option value="all">All Combined</option>
+                </select>
+              </div>
+
+              <button class="btn btn-secondary btn-sm" id="btn-reset-filters">Reset</button>
+              <button class="btn btn-secondary btn-sm" id="btn-export-csv" title="Download current filtered claims as CSV">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Export CSV
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Filter Chips -->
+          <div class="quick-chips-bar">
+            <span class="quick-chips-label">Quick Filters:</span>
+            <button class="quick-chip active" data-preset="all">All Active Queue (2,252)</button>
+            <button class="quick-chip" data-preset="priority">Top Review Queue (Score &ge; 46%)</button>
+            <button class="quick-chip" data-preset="sub2k_uninspected">Post-May Uninspected (&lt; &#8377;2k)</button>
+            <button class="quick-chip" data-preset="critical">Critical (&ge; 75%)</button>
+            <button class="quick-chip" data-preset="historical_fraud">Historical Confirmed Frauds</button>
+          </div>
+
+          <!-- Claims Table -->
+          <div class="table-card" style="margin-top: 1rem;">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th class="sortable" data-sort="claim_id">Claim ID</th>
+                    <th class="sortable" data-sort="submitted_at">Submission Date</th>
+                    <th>Product</th>
+                    <th class="sortable" data-sort="claim_amount_inr">Amount (INR)</th>
+                    <th>Partner</th>
+                    <th>City / Type</th>
+                    <th>Inspection</th>
+                    <th>Photo</th>
+                    <th class="sortable" data-sort="risk_score">Risk Score</th>
+                    <th>Recommendation</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="claims-table-tbody">
+                  <tr><td colspan="11" class="loading-cell">Loading claims data...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination Bar -->
+            <div class="pagination-bar">
+              <div class="pagination-info" id="pagination-info">Showing 1 - 25 of 2,252 claims</div>
+              <div class="pagination-actions">
+                <button class="btn btn-secondary btn-sm" id="btn-prev-page" disabled>Previous</button>
+                <span class="page-current" id="page-indicator">Page 1 of 91</span>
+                <button class="btn btn-secondary btn-sm" id="btn-next-page">Next</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== 3. CLAIM REVIEW & TRIAGE VIEW =================== -->
+        <section class="view-panel" id="view-review">
+          <div class="section-intro">
+            <h2>Individual Claim Review & Policy Evaluation</h2>
+            <p class="section-subtext">Evaluate any live claim against trained model risk weights, Ops Policy §5 rules, and photographic compliance.</p>
+          </div>
+
+          <!-- Quick Selector / Loader -->
+          <div class="review-prefill-bar">
+            <span>Select a preloaded case study:</span>
+            <button class="btn btn-ghost btn-sm" onclick="loadCaseStudy('post_may_fraud')">Case 1: May Policy Loopholes (SP3160, &lt;₹2k, No Inspection)</button>
+            <button class="btn btn-ghost btn-sm" onclick="loadCaseStudy('high_amount_fraud')">Case 2: Disproportionate Amount (75% of List Price)</button>
+            <button class="btn btn-ghost btn-sm" onclick="loadCaseStudy('clean_genuine')">Case 3: Clean Verified Claim (Standard Repair)</button>
+            <button class="btn btn-ghost btn-sm" onclick="loadCaseStudy('policy_violation')">Case 4: Mandatory Inspection Violation (&ge;₹2k, No Inspection)</button>
+          </div>
+
+          <div class="review-grid">
+            <!-- Left: Claim Submission / Editing Form -->
+            <div class="card form-card">
+              <div class="card-header">
+                <h3>Claim Record Parameters</h3>
+                <span class="card-badge">Live Triage Input</span>
+              </div>
+              <form id="claim-review-form" class="standard-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="form-claim-id">Claim ID</label>
+                    <input type="text" id="form-claim-id" value="WC-REVIEW-001" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="form-submitted-at">Submission Timestamp (IST)</label>
+                    <input type="text" id="form-submitted-at" value="2026-08-12 11:45" required>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="form-partner-id">Service Partner ID</label>
+                    <input type="text" id="form-partner-id" value="SP3160" required placeholder="e.g. SP3033, SP3160">
+                    <span class="field-hint">Key into partners directory</span>
+                  </div>
+                  <div class="form-group">
+                    <label for="form-sku">Product SKU</label>
+                    <select id="form-sku" required>
+                      <option value="KH-AF-01">KH-AF-01 (Air Fryer - ₹5,199)</option>
+                      <option value="KH-AF-02">KH-AF-02 (Air Fryer - ₹6,499)</option>
+                      <option value="KH-MG-01">KH-MG-01 (Mixer Grinder - ₹3,199)</option>
+                      <option value="KH-MG-02">KH-MG-02 (Mixer Grinder - ₹3,999)</option>
+                      <option value="KH-WP-01">KH-WP-01 (Water Purifier - ₹11,999)</option>
+                      <option value="KH-WP-02">KH-WP-02 (Water Purifier - ₹14,999)</option>
+                      <option value="KH-RV-01">KH-RV-01 (Robot Vacuum - ₹17,599)</option>
+                      <option value="KH-RV-02">KH-RV-02 (Robot Vacuum - ₹21,999)</option>
+                      <option value="KH-IC-01">KH-IC-01 (Induction Cooktop - ₹2,399)</option>
+                      <option value="KH-CF-01">KH-CF-01 (Ceiling Fan - ₹2,799)</option>
+                      <option value="KH-RH-01">KH-RH-01 (Room Heater - ₹1,999)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="form-serial">Product Serial Number</label>
+                    <input type="text" id="form-serial" value="KH884920194" required placeholder="11-char serial">
+                  </div>
+                  <div class="form-group">
+                    <label for="form-days">Days Since Purchase</label>
+                    <input type="number" id="form-days" value="84" min="1" max="1000" required>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="form-amount">Claim Amount (INR)</label>
+                    <input type="number" id="form-amount" value="1950.00" step="1.00" min="0" required>
+                    <span class="field-hint">&lt;₹2,000 auto-approved post-May (§5)</span>
+                  </div>
+                  <div class="form-group">
+                    <label for="form-priors">Customer Prior Claims</label>
+                    <input type="number" id="form-priors" value="0" min="0" max="15" required>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="form-inspected">Partner Inspected?</label>
+                    <select id="form-inspected" required>
+                      <option value="N">No (N) - Uninspected</option>
+                      <option value="Y">Yes (Y) - Inspected Sign-off</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="form-photo">Photo Attached?</label>
+                    <select id="form-photo" required>
+                      <option value="Y">Yes (Y) - Photo Uploaded</option>
+                      <option value="N">No (N) - Missing Photo</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="form-desc">Partner Fault Description</label>
+                  <input type="text" id="form-desc" value="motor not running" required placeholder="Partner description text">
+                </div>
+
+                <div class="form-group">
+                  <label for="form-inspector-note">Inspector Note (Leave blank if uninspected)</label>
+                  <input type="text" id="form-inspector-note" value="" placeholder="Blank if uninspected">
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary" id="btn-submit-predict">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                      <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                    Run Fraud Scoring & Policy Check
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Right: Real-time Evaluation Panel -->
+            <div class="card result-card" id="evaluation-result-container">
+              <div class="card-header">
+                <h3>Decision Engine Results</h3>
+                <span class="card-badge" id="eval-risk-badge">Ready</span>
+              </div>
+
+              <div class="result-body" id="eval-body">
+                <div class="empty-state">
+                  <p>Click "Run Fraud Scoring" or select one of the preloaded case studies above to evaluate a claim.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== 4. PARTNER ANALYSIS VIEW =================== -->
+        <section class="view-panel" id="view-partners">
+          <div class="section-intro">
+            <h2>Service Partner Network & Risk Analysis</h2>
+            <p class="section-subtext">Empirical investigation into partner tenure, claim volumes, and verified fraud patterns across tier-2/3 expansion cohorts.</p>
+          </div>
+
+          <!-- Hypothesis Investigation Banner -->
+          <div class="card hypothesis-card">
+            <div class="hypothesis-header">
+              <div class="hypothesis-title-block">
+                <span class="hypothesis-tag">Executive Inquiry</span>
+                <h3>Hypothesis Test: Do Newer Service Partners Drive Higher Fraud?</h3>
+              </div>
+            </div>
+            <div class="hypothesis-body">
+              <div class="hypothesis-perspectives">
+                <div class="perspective-box">
+                  <span class="persp-speaker">Ritu Deshpande (Head of D2C Ops):</span>
+                  <blockquote>"I'm fairly sure it's the newer partners, but let's have the data say it."</blockquote>
+                </div>
+                <div class="perspective-box">
+                  <span class="persp-speaker">Meenal Joshi (Service Desk Manager):</span>
+                  <blockquote>"Since the May change the small claims have exploded - my team sees the same few outlets again and again. But please don't paint all the new partners with one brush, most of the new ones are fine and we need them in the smaller cities."</blockquote>
+                </div>
+              </div>
+
+              <!-- Cohort Stats Comparison Table -->
+              <div class="table-responsive" style="margin-top: 1.5rem;">
+                <table class="data-table cohort-table">
+                  <thead>
+                    <tr>
+                      <th>Partner Cohort</th>
+                      <th>Partner Count</th>
+                      <th>Claims Submitted</th>
+                      <th>Confirmed Fraud Claims</th>
+                      <th>Cohort Fraud Rate</th>
+                      <th>Zero-Fraud Partners</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Newer Partners</strong> (Onboarded &ge; 2025)</td>
+                      <td>65 partners</td>
+                      <td>1,099 claims</td>
+                      <td>36 claims</td>
+                      <td><span class="badge badge-warning">3.28%</span></td>
+                      <td><strong>81.5%</strong> (53 of 65 have zero fraud)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Established Partners</strong> (Onboarded &lt; 2025)</td>
+                      <td>301 partners</td>
+                      <td>10,715 claims</td>
+                      <td>109 claims</td>
+                      <td><span class="badge badge-neutral">1.02%</span></td>
+                      <td><strong>87.0%</strong> (262 of 301 have zero fraud)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="findings-box" style="margin-top: 1.25rem;">
+                <h4>Empirical Conclusion</h4>
+                <p>While the overall cohort fraud rate is higher among newer partners (3.28% vs 1.02%), <strong>over 81% of new partners have zero recorded fraud</strong>. The post-May explosion in fraudulent claims is driven by a small, concentrated cluster of 5 specific outlets (SP3160, SP3232, SP3318, SP3129, SP3319) systematically exploiting the uninspected sub-₹2,000 loophole. Conversely, several top historical fraudsters (e.g. SP3207, SP3376, SP3095) were established partners onboarded in 2021-2023. Blanket blacklisting of new partners would severely disrupt tier-2/3 coverage without solving the policy vulnerability.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top High Risk Partners Table -->
+          <div class="table-card" style="margin-top: 1.5rem;">
+            <div class="table-header-row">
+              <div>
+                <h3>Outlets with Highest Recorded Fraud Frequency</h3>
+                <p class="table-subtext">Individual partner statistics audited from verified historical outcomes.</p>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Partner ID</th>
+                    <th>City</th>
+                    <th>Partner Type</th>
+                    <th>Onboarded Date</th>
+                    <th>Total Claims</th>
+                    <th>Confirmed Frauds</th>
+                    <th>Observed Fraud Rate</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="partner-risk-tbody">
+                  <tr><td colspan="8" class="loading-cell">Loading partner records...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== 5. MODEL EVALUATION VIEW =================== -->
+        <section class="view-panel" id="view-evaluation">
+          <div class="section-intro">
+            <h2>Model Evaluation & Validation Report</h2>
+            <p class="section-subtext">Rigorous out-of-fold metrics, threshold calibration, and comparison against baseline classifier.</p>
+          </div>
+
+          <!-- Board KPI vs Reality Callout -->
+          <div class="card callout-card">
+            <div class="callout-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="callout-icon">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <h4>Executive KPI Context: The Accuracy Trap</h4>
+            </div>
+            <p>Ritu Deshpande noted: <em>"The board wants a fraud flag on warranty claims before payout. Accuracy above 97%, that's the KPI they've asked for."</em></p>
+            <p class="callout-explanation">In this dataset, the base fraud prevalence is <strong>1.23%</strong>. A trivial model predicting "0 (Non-Fraud)" for every claim achieves <strong>98.77% accuracy</strong>, yet intercepts zero fraud and delivers zero financial benefit. Our production classifier achieves <strong>98.6% accuracy</strong> while capturing <strong>72.4% of all fraud (Recall)</strong> at the calibrated operational threshold.</p>
+          </div>
+
+          <!-- Model vs Baseline Comparison Cards -->
+          <div class="comparison-grid" style="margin-top: 1.5rem;">
+            <div class="card comparison-card">
+              <div class="card-header">
+                <h3>Production Classifier</h3>
+                <span class="badge badge-success">Balanced Random Forest</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">ROC-AUC:</span>
+                <span class="metric-val" id="eval-rf-auc">0.8763</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">PR-AUC (Avg Precision):</span>
+                <span class="metric-val" id="eval-rf-prauc">0.6137</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Recall (at 40/mo cap):</span>
+                <span class="metric-val" id="eval-rf-recall">72.4%</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Precision (at 40/mo cap):</span>
+                <span class="metric-val" id="eval-rf-precision">22.8%</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Calibrated Threshold:</span>
+                <span class="metric-val" id="eval-rf-thresh">0.4615</span>
+              </div>
+            </div>
+
+            <div class="card comparison-card">
+              <div class="card-header">
+                <h3>Baseline Classifier</h3>
+                <span class="badge badge-neutral">Standardized Logistic Reg</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">ROC-AUC:</span>
+                <span class="metric-val" id="eval-base-auc">0.8528</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">PR-AUC (Avg Precision):</span>
+                <span class="metric-val" id="eval-base-prauc">0.1937</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Recall (at 40/mo cap):</span>
+                <span class="metric-val">34.5%</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Precision (at 40/mo cap):</span>
+                <span class="metric-val">8.3%</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Net Benefit Difference:</span>
+                <span class="metric-val danger-text">-₹2,14,000</span>
+              </div>
+            </div>
+
+            <div class="card comparison-card">
+              <div class="card-header">
+                <h3>Dataset & Partitioning</h3>
+                <span class="badge badge-info">Audited Out-of-Fold</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Total Claims Sampled:</span>
+                <span class="metric-val">12,029</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Supervised Adjudicated:</span>
+                <span class="metric-val">11,814</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Undecided CRM Open:</span>
+                <span class="metric-val">215</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Confirmed Positive Cases:</span>
+                <span class="metric-val">145</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Evaluation Strategy:</span>
+                <span class="metric-val">5-Fold Stratified CV</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Threshold Sweep Table -->
+          <div class="table-card" style="margin-top: 1.5rem;">
+            <div class="table-header-row">
+              <div>
+                <h3>Threshold Sensitivity & Financial Net Benefit Sweep</h3>
+                <p class="table-subtext">Evaluating trade-offs between precision, recall, genuine customer delays (₹380 goodwill), and fraud intercepted.</p>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Threshold</th>
+                    <th>Claims Flagged</th>
+                    <th>True Pos (TP)</th>
+                    <th>False Pos (FP)</th>
+                    <th>Precision</th>
+                    <th>Recall</th>
+                    <th>Accuracy</th>
+                    <th>Net Financial Benefit (INR)</th>
+                  </tr>
+                </thead>
+                <tbody id="eval-threshold-tbody">
+                  <tr><td colspan="8" class="loading-cell">Loading threshold sweep...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Interactive Confusion Matrix & Feature Drivers Grid -->
+          <div class="review-grid" style="margin-top: 1.5rem;">
+            <!-- Left: Confusion Matrix Heatmap -->
+            <div class="card confusion-matrix-wrapper" style="margin-top:0;">
+              <div class="card-header">
+                <h3>Confusion Matrix Heatmap (Out-of-Fold @ 0.4615)</h3>
+                <span class="badge badge-info">11,814 Claims</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">
+                Cross-validated performance under the operating threshold calibrated to the 40 reviews/month ceiling.
+              </p>
+              
+              <div class="cm-container">
+                <div class="cm-axis-y">Actual Observed Label</div>
+                <div class="cm-content">
+                  <div class="cm-axis-x">
+                    <span>Predicted Genuine (0)</span>
+                    <span>Predicted Fraud (1)</span>
+                  </div>
+                  <div class="cm-grid">
+                    <!-- Top-Left: True Negative -->
+                    <div class="cm-cell cm-cell-tn">
+                      <span class="cm-tag">True Negative (TN)</span>
+                      <span class="cm-count" id="cm-tn">11,172</span>
+                      <span class="cm-desc">Genuine claims auto-approved without friction.</span>
+                    </div>
+                    <!-- Top-Right: False Positive -->
+                    <div class="cm-cell cm-cell-fp">
+                      <span class="cm-tag">False Positive (FP)</span>
+                      <span class="cm-count" id="cm-fp">497</span>
+                      <span class="cm-desc">Genuine claims held for review (&#8377;380 goodwill cost).</span>
+                    </div>
+                    <!-- Bottom-Left: False Negative -->
+                    <div class="cm-cell cm-cell-fn">
+                      <span class="cm-tag">False Negative (FN)</span>
+                      <span class="cm-count" id="cm-fn">39</span>
+                      <span class="cm-desc">Fraudulent claims missed (payout cost incurred).</span>
+                    </div>
+                    <!-- Bottom-Right: True Positive -->
+                    <div class="cm-cell cm-cell-tp">
+                      <span class="cm-tag">True Positive (TP)</span>
+                      <span class="cm-count" id="cm-tp">106</span>
+                      <span class="cm-desc">Fraud intercepted & payout prevented (72.4% Recall).</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Feature Importance Breakdown -->
+            <div class="card" style="margin-top:0;">
+              <div class="card-header">
+                <h3>Top Empirical Risk Drivers</h3>
+                <span class="badge badge-success">Random Forest Gini</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">
+                Relative predictive weights learned across verified warranty claims.
+              </p>
+              <div class="feature-bars-list" id="feature-importance-list">
+                <div class="loading-cell">Loading feature drivers...</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== 6. SETTINGS & CAPACITY VIEW =================== -->
+        <section class="view-panel" id="view-settings">
+          <div class="section-intro">
+            <h2>Operations Policy Settings & Financial Exposure Simulation</h2>
+            <p class="section-subtext">Configure operational cost parameters from Ops Policy v4.1 and recalculate monthly investigation ROI.</p>
+          </div>
+
+          <div class="settings-grid">
+            <!-- Left: Parameters Form -->
+            <div class="card settings-card">
+              <div class="card-header">
+                <h3>Operational Cost & Capacity Assumptions</h3>
+                <span class="card-badge">Policy v4.1</span>
+              </div>
+              <form id="settings-form" class="standard-form">
+                <div class="form-group">
+                  <label for="setting-capacity">Investigation Desk Monthly Capacity (Claims/Month)</label>
+                  <div class="range-slider-group">
+                    <input type="range" id="setting-capacity" min="10" max="100" step="5" value="40">
+                    <span class="slider-val" id="val-capacity">40 claims</span>
+                  </div>
+                  <span class="field-hint">Farhan Sheikh (Finance): Desk can look at forty claims a month, no more.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="setting-goodwill">Genuine Customer Delay Goodwill Compensation (INR)</label>
+                  <input type="number" id="setting-goodwill" value="380" step="10" min="0">
+                  <span class="field-hint">Ops Policy §4: Kestrel issues goodwill worth ₹380 on average for delays.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="setting-labor">Blended Service Contact Labor Cost (INR)</label>
+                  <input type="number" id="setting-labor" value="260" step="10" min="0">
+                  <span class="field-hint">Ops Policy §4: Blended contact cost is ₹260 per desk review.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="setting-realization">Fraud Payout Prevention Realization Rate</label>
+                  <select id="setting-realization">
+                    <option value="1.0">100% Payout Blocked (Full Claim Value Saved)</option>
+                    <option value="0.9">90% Payout Blocked (Conservative Recovery)</option>
+                    <option value="0.8">80% Payout Blocked (Dispute Loss Allowance)</option>
+                  </select>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary" id="btn-recalc-roi">Recalculate Business Impact</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Right: Real-time ROI Summary -->
+            <div class="card roi-card">
+              <div class="card-header">
+                <h3>Financial Impact Projection (Q3 2026 Test Period)</h3>
+                <span class="badge badge-success">Farhan's Rupee ROI</span>
+              </div>
+              <div class="roi-summary-block">
+                <div class="roi-kpi">
+                  <span class="roi-kpi-label">Gross Prevented Fraud Loss</span>
+                  <span class="roi-kpi-value success-text" id="sim-prevented">₹1,92,420</span>
+                </div>
+                <div class="roi-kpi">
+                  <span class="roi-kpi-label">Customer Goodwill Penalties</span>
+                  <span class="roi-kpi-value warning-text" id="sim-goodwill">-₹35,340</span>
+                </div>
+                <div class="roi-kpi">
+                  <span class="roi-kpi-label">Desk Investigation Labor</span>
+                  <span class="roi-kpi-value" id="sim-labor">-₹31,200</span>
+                </div>
+                <div class="roi-divider"></div>
+                <div class="roi-kpi highlighted">
+                  <span class="roi-kpi-label">Projected Net Benefit</span>
+                  <span class="roi-kpi-value" id="sim-net">₹1,25,880</span>
+                </div>
+                <div class="roi-subtext" id="sim-return-per-claim">
+                  Net Return per Investigation: <strong>₹1,049.00 / claim</strong>
+                </div>
+              </div>
+
+              <div class="policy-reminder" style="margin-top: 1.5rem;">
+                <h4>Capacity Allocation Note</h4>
+                <p>At 40 reviews per month, Kestrel allocates exactly 120 investigations over the 2,252 incoming Q3 claims (5.3% selection rate). This achieves the highest return per rupee spent while protecting customer turnaround times.</p>
+              </div>
+
+              <div class="form-actions" style="margin-top: 1.25rem;">
+                <button class="btn btn-secondary" style="width:100%;" onclick="window.print()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                    <polyline points="6 9 6 2 18 2 18 9"/>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                    <rect x="6" y="14" width="12" height="8"/>
+                  </svg>
+                  Generate Executive Audit Dossier (Print / PDF)
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Sliding Details Drawer for Claim Modal -->
+  <div class="drawer-overlay" id="drawer-overlay"></div>
+  <aside class="details-drawer" id="details-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title-group">
+        <span class="drawer-subtitle">Claim Details & Telemetry</span>
+        <h2 id="drawer-claim-id">WC711348</h2>
+      </div>
+      <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Close drawer">&times;</button>
+    </div>
+    <div class="drawer-content" id="drawer-content">
+      <!-- Populated via JavaScript -->
+    </div>
+  </aside>
+
+  <!-- Notification Toast -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

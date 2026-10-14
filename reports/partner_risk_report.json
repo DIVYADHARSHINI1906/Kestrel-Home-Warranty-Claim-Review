@@ -1,0 +1,157 @@
+{
+  "hypothesis": "Ritu's hypothesis: Newer partners drive fraud vs Meenal's caution: Don't paint new partners with one brush.",
+  "findings": [
+    {
+      "cohort": "Established Partners (Onboarded < 2025)",
+      "partner_count": 301,
+      "claims_submitted": 10715,
+      "confirmed_fraud_claims": 109,
+      "cohort_fraud_rate": 0.0102
+    },
+    {
+      "cohort": "Newer Partners (Onboarded >= 2025)",
+      "partner_count": 79,
+      "claims_submitted": 1099,
+      "confirmed_fraud_claims": 36,
+      "cohort_fraud_rate": 0.0328
+    }
+  ],
+  "conclusion": "While newer partners show a higher average fraud rate (3.28% vs 1.02%), over 80% of newer partners have zero recorded fraud. The surge in fraud post-May 2026 is concentrated in a tiny cluster of specific outlets (e.g., SP3160, SP3232, SP3318, SP3129, SP3319) systematically exploiting the uninspected sub-\u20b92,000 rule. Broadly penalizing or deprioritizing all new partners would undermine tier-2/3 expansion without addressing the root policy vulnerability.",
+  "top_high_risk_partners": [
+    {
+      "partner_id": "SP3207",
+      "city": "Hyderabad",
+      "partner_type": "franchise",
+      "onboarded_date": "2022-02-23",
+      "total_claims": 40.0,
+      "fraud_claims": 14.0,
+      "fraud_rate": 0.35
+    },
+    {
+      "partner_id": "SP3376",
+      "city": "Mysuru",
+      "partner_type": "franchise",
+      "onboarded_date": "2023-04-08",
+      "total_claims": 40.0,
+      "fraud_claims": 12.0,
+      "fraud_rate": 0.3
+    },
+    {
+      "partner_id": "SP3095",
+      "city": "Bhopal",
+      "partner_type": "franchise",
+      "onboarded_date": "2021-11-17",
+      "total_claims": 38.0,
+      "fraud_claims": 11.0,
+      "fraud_rate": 0.2894736842105263
+    },
+    {
+      "partner_id": "SP3160",
+      "city": "Pune",
+      "partner_type": "authorised_service_centre",
+      "onboarded_date": "2025-12-27",
+      "total_claims": 42.0,
+      "fraud_claims": 10.0,
+      "fraud_rate": 0.23809523809523808
+    },
+    {
+      "partner_id": "SP3103",
+      "city": "Jaipur",
+      "partner_type": "franchise",
+      "onboarded_date": "2022-07-27",
+      "total_claims": 37.0,
+      "fraud_claims": 9.0,
+      "fraud_rate": 0.24324324324324326
+    },
+    {
+      "partner_id": "SP3350",
+      "city": "Hubballi",
+      "partner_type": "franchise",
+      "onboarded_date": "2023-02-20",
+      "total_claims": 33.0,
+      "fraud_claims": 9.0,
+      "fraud_rate": 0.2727272727272727
+    },
+    {
+      "partner_id": "SP3292",
+      "city": "Nashik",
+      "partner_type": "authorised_service_centre",
+      "onboarded_date": "2024-01-04",
+      "total_claims": 32.0,
+      "fraud_claims": 7.0,
+      "fraud_rate": 0.21875
+    },
+    {
+      "partner_id": "SP3228",
+      "city": "Pune",
+      "partner_type": "freelance_technician",
+      "onboarded_date": "2021-08-11",
+      "total_claims": 26.0,
+      "fraud_claims": 7.0,
+      "fraud_rate": 0.2692307692307692
+    },
+    {
+      "partner_id": "SP3232",
+      "city": "Jaipur",
+      "partner_type": "authorised_service_centre",
+      "onboarded_date": "2025-11-26",
+      "total_claims": 42.0,
+      "fraud_claims": 7.0,
+      "fraud_rate": 0.16666666666666666
+    },
+    {
+      "partner_id": "SP3318",
+      "city": "Hubballi",
+      "partner_type": "franchise",
+      "onboarded_date": "2025-12-06",
+      "total_claims": 31.0,
+      "fraud_claims": 6.0,
+      "fraud_rate": 0.1935483870967742
+    },
+    {
+      "partner_id": "SP3129",
+      "city": "Chennai",
+      "partner_type": "authorised_service_centre",
+      "onboarded_date": "2026-01-19",
+      "total_claims": 26.0,
+      "fraud_claims": 4.0,
+      "fraud_rate": 0.15384615384615385
+    },
+    {
+      "partner_id": "SP3319",
+      "city": "Warangal",
+      "partner_type": "franchise",
+      "onboarded_date": "2026-02-11",
+      "total_claims": 14.0,
+      "fraud_claims": 3.0,
+      "fraud_rate": 0.21428571428571427
+    },
+    {
+      "partner_id": "SP3304",
+      "city": "Bhopal",
+      "partner_type": "authorised_service_centre",
+      "onboarded_date": "2023-05-17",
+      "total_claims": 40.0,
+      "fraud_claims": 2.0,
+      "fraud_rate": 0.05
+    },
+    {
+      "partner_id": "SP3293",
+      "city": "Indore",
+      "partner_type": "franchise",
+      "onboarded_date": "2022-05-24",
+      "total_claims": 35.0,
+      "fraud_claims": 2.0,
+      "fraud_rate": 0.05714285714285714
+    },
+    {
+      "partner_id": "SP3178",
+      "city": "Aurangabad",
+      "partner_type": "authorised_service_centre",
+      "onboarded_date": "2022-08-25",
+      "total_claims": 40.0,
+      "fraud_claims": 2.0,
+      "fraud_rate": 0.05
+    }
+  ]
+}
